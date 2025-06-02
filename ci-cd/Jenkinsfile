@@ -1,0 +1,143 @@
+pipeline {
+    agent any // Or specify a label for a specific agent type
+
+    environment {
+        // Define environment variables, e.g., credentials if not using Jenkins secrets
+        // QA_API_BASE_URL = 'http://qa-api.example.com/api/v1'
+        // SELENIUM_BROWSER = 'chrome'
+        // ALLURE_RESULTS_DIR = 'allure-results'
+        // POSTMAN_COLLECTION = 'postman-tests/E-Commerce_API_Tests.postman_collection.json'
+        // POSTMAN_ENVIRONMENT = 'postman-tests/environments/qa.postman_environment.json'
+        // JMETER_HOME = '/opt/jmeter' // Example path, adjust to your Jenkins agent setup
+        // JMETER_TEST_PLAN_DIR = 'jmeter-tests'
+    }
+
+    tools {
+        // Define tool installations if managed by Jenkins global tool configuration
+        // jdk 'JDK 11' // Example
+        // nodejs 'NodeJS 16' // Example
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                echo 'Checking out code...'
+                // Replace with your SCM checkout command, e.g., git poll: true, url: 'your-repo-url'
+                checkout scm
+            }
+        }
+
+        stage('Environment Setup') {
+            steps {
+                echo 'Setting up test environment...'
+                // Example: Install Python dependencies for Selenium
+                sh '''
+                    pip install --upgrade pip
+                    pip install -r selenium-tests/requirements.txt
+                '''
+                // Example: Install Newman for Postman (if Node.js is available)
+                // sh 'npm install -g newman newman-reporter-allure'
+                // Ensure JMeter is available on the agent and JMETER_HOME is set
+            }
+        }
+
+        stage('Run Selenium UI Tests') {
+            steps {
+                echo 'Running Selenium UI tests...'
+                dir('selenium-tests') {
+                    sh 'pytest --alluredir=${WORKSPACE}/allure-results tests/'
+                }
+            }
+            post {
+                always {
+                    allure includeProperties: false, jdk: '', results: [[path: 'allure-results']]
+                }
+            }
+        }
+
+        stage('Run Postman API Tests') {
+            steps {
+                echo 'Running Postman API tests...'
+                // Ensure Newman and allure reporter are installed globally or in node_modules
+                // Example: sh 'newman run "${POSTMAN_COLLECTION}" -e "${POSTMAN_ENVIRONMENT}" -r allure,cli,junit --reporter-allure-export allure-results/postman --reporter-junit-export postman-results.xml'
+                sh '''
+                    echo "Newman execution placeholder. Ensure newman and newman-reporter-allure are installed."
+                    echo "Example: newman run postman-tests/E-Commerce_API_Tests.postman_collection.json -e postman-tests/environments/qa.postman_environment.json -r cli,junit,allure --reporter-junit-export postman-results/junit.xml --reporter-allure-export allure-results/postman"
+                    mkdir -p postman-results
+                    mkdir -p allure-results/postman 
+                    touch postman-results/junit.xml # Placeholder for JUnit results
+                '''
+            }
+            post {
+                always {
+                    junit 'postman-results/junit.xml' // Publish JUnit results for Postman
+                    // Allure results for Postman are typically handled by the allure command in the Selenium stage if paths are merged
+                }
+            }
+        }
+
+        stage('Run JMeter Performance Tests') {
+            steps {
+                echo 'Running JMeter performance tests...'
+                // Ensure JMeter is installed and configured on the Jenkins agent
+                // Example: sh "${JMETER_HOME}/bin/jmeter -n -t ${JMETER_TEST_PLAN_DIR}/homepage_load_test.jmx -l jmeter-results/homepage_results.jtl -e -o jmeter-results/homepage_dashboard"
+                // sh "${JMETER_HOME}/bin/jmeter -n -t ${JMETER_TEST_PLAN_DIR}/product_api_load_test.jmx -l jmeter-results/product_api_results.jtl -e -o jmeter-results/product_api_dashboard"
+                // sh "${JMETER_HOME}/bin/jmeter -n -t ${JMETER_TEST_PLAN_DIR}/checkout_api_load_test.jmx -l jmeter-results/checkout_api_results.jtl -e -o jmeter-results/checkout_api_dashboard"
+                sh '''
+                    echo "JMeter execution placeholder. Ensure JMeter is installed and JMETER_HOME is set."
+                    echo "Example: /opt/jmeter/bin/jmeter -n -t jmeter-tests/homepage_load_test.jmx -l jmeter-results/homepage_results.jtl -e -o jmeter-results/homepage_dashboard"
+                    mkdir -p jmeter-results/homepage_dashboard
+                    touch jmeter-results/homepage_results.jtl
+                '''
+            }
+            post {
+                always {
+                    // Archive JMeter results (JTL files and HTML dashboards)
+                    archiveArtifacts artifacts: 'jmeter-results/**/*.jtl, jmeter-results/**/index.html, jmeter-results/**/*.png, jmeter-results/**/*.js, jmeter-results/**/*.css', allowEmptyArchive: true
+                    // Consider using the Performance Plugin for JMeter results: https://plugins.jenkins.io/performance/
+                }
+            }
+        }
+
+        // The Allure report generation is often handled by the Allure Jenkins Plugin globally
+        // or by the post action in the Selenium stage if it's the primary source of Allure results.
+        // If you want a dedicated stage to generate the report (e.g., if combining multiple sources manually):
+        /*
+        stage('Publish Allure Report') {
+            steps {
+                echo 'Generating Allure report...'
+                // This command assumes Allure CLI is installed on the agent
+                // sh 'allure generate --clean allure-results -o allure-report'
+            }
+            post {
+                always {
+                    // This uses the Allure Jenkins plugin
+                    allure includeProperties: false, jdk: '', reportBuildPolicy: 'ALWAYS', results: [[path: 'allure-results']]
+                    // If you generated a static report, you might archive it or use HTML Publisher plugin
+                    // publishHTML([allowMissing: false, alwaysLinkToLastBuild: true, keepAll: true, reportDir: 'allure-report', reportFiles: 'index.html', reportName: 'Allure Report'])
+                }
+            }
+        }
+        */
+    }
+
+    // Global post actions
+    post {
+        always {
+            echo 'Pipeline finished.'
+            // Clean up workspace if needed
+            // cleanWs()
+        }
+        success {
+            echo 'Pipeline succeeded!'
+            // Send notifications, e.g., email, Slack
+        }
+        failure {
+            echo 'Pipeline failed!'
+            // Send failure notifications
+        }
+        unstable {
+            echo 'Pipeline is unstable (tests failed but build not marked as failure).'
+        }
+    }
+}

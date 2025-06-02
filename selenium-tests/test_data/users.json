@@ -1,0 +1,44 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "username": "admin@example.com",
+      "password": "admin123",
+      "first_name": "Admin",
+      "last_name": "User",
+      "role": "admin"
+    },
+    {
+      "id": "2",
+      "username": "customer@example.com",
+      "password": "customer123",
+      "first_name": "John",
+      "last_name": "Doe",
+      "role": "customer",
+      "address": {
+        "street": "123 Main St",
+        "city": "Anytown",
+        "state": "CA",
+        "zip": "12345",
+        "country": "USA"
+      },
+      "phone": "555-123-4567"
+    },
+    {
+      "id": "3",
+      "username": "test@example.com",
+      "password": "test123",
+      "first_name": "Test",
+      "last_name": "User",
+      "role": "customer",
+      "address": {
+        "street": "456 Oak Ave",
+        "city": "Somewhere",
+        "state": "NY",
+        "zip": "67890",
+        "country": "USA"
+      },
+      "phone": "555-987-6543"
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "environments": {
+    "dev": {
+      "base_url": "https://demo.opencart.com",
+      "api_url": "https://demo.opencart.com/index.php?route=api"
+    },
+    "qa": {
+      "base_url": "https://demo.opencart.com",
+      "api_url": "https://demo.opencart.com/index.php?route=api"
+    },
+    "prod": {
+      "base_url": "https://demo.opencart.com",
+      "api_url": "https://demo.opencart.com/index.php?route=api"
+    }
+  },
+  "timeouts": {
+    "implicit_wait": 10,
+    "page_load": 30,
+    "script": 30
+  },
+  "test_data": {
+    "admin_user": {
+      "username": "admin@opencart.com",
+      "password": "admin123"
+    },
+    "customer_user": {
+      "username": "customer@opencart.com",
+      "password": "customer123"
+    }
+  }
+}

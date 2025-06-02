@@ -1,0 +1,59 @@
+{
+  "products": [
+    {
+      "id": "1",
+      "name": "Premium Wireless Headphones",
+      "price": 129.99,
+      "description": "High-quality wireless headphones with noise cancellation and 30-hour battery life.",
+      "category": "Electronics",
+      "sizes": ["One Size"],
+      "colors": ["Black", "White", "Blue"],
+      "stock": 50,
+      "rating": 4.7
+    },
+    {
+      "id": "2",
+      "name": "Casual Cotton T-Shirt",
+      "price": 24.99,
+      "description": "Comfortable 100% cotton t-shirt, perfect for everyday wear.",
+      "category": "Clothing",
+      "sizes": ["S", "M", "L", "XL"],
+      "colors": ["White", "Black", "Gray", "Navy"],
+      "stock": 100,
+      "rating": 4.5
+    },
+    {
+      "id": "3",
+      "name": "Smart Fitness Watch",
+      "price": 89.99,
+      "description": "Track your fitness goals with this advanced smartwatch featuring heart rate monitoring and GPS.",
+      "category": "Electronics",
+      "sizes": ["One Size"],
+      "colors": ["Black", "Silver"],
+      "stock": 30,
+      "rating": 4.3
+    },
+    {
+      "id": "4",
+      "name": "Leather Wallet",
+      "price": 49.99,
+      "description": "Genuine leather wallet with multiple card slots and RFID protection.",
+      "category": "Accessories",
+      "sizes": ["One Size"],
+      "colors": ["Brown", "Black"],
+      "stock": 75,
+      "rating": 4.8
+    },
+    {
+      "id": "5",
+      "name": "Stainless Steel Water Bottle",
+      "price": 19.99,
+      "description": "Eco-friendly double-walled insulated water bottle that keeps drinks cold for 24 hours or hot for 12 hours.",
+      "category": "Home",
+      "sizes": ["500ml", "750ml", "1L"],
+      "colors": ["Silver", "Black", "Blue", "Red"],
+      "stock": 120,
+      "rating": 4.6
+    }
+  ]
+}
